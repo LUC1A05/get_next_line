@@ -12,80 +12,70 @@
 
 #include "get_next_line.h"
 
-char	*ft_free(char *buffer, char *buf)
-{
-	char	*temp;
-
-	temp = ft_strjoin(buffer, buf);
-	free(buffer);
-	return(temp);
+int main() {
+    // Example usage
+    int fd = open("example.txt", O_RDONLY);
+    char *line = get_next_line(fd);
+    
+	while ((line = get_next_line(fd)) != NULL)
+	{
+		printf("%s\n", line);
+		free(line);
+	}
+	close(fd);
+    return (0);
 }
-char	*clear_buffer(char *buffer)
+
+void	read_and_add(int fd, char *full_line, int readed)
+{
+	char	*buff;
+
+	while (!ft_strchr(buff, '\n') && readed != 0)
+	{
+		buff = malloc(sizeof(char) * (BUFFER_SIZE + 1));
+		if (buff == NULL)
+			return;
+		readed = read(fd, buff, BUFFER_SIZE);
+		if (full_line == NULL && readed == 0)
+		{
+			free(buff);
+			return;
+		}
+		buff[readed] = '\0';
+		full_line = ft_strjoin(full_line, buff);
+		free(buff);
+	}
+}
+
+void extract_line(char *full_line, char *line)
 {
 	int		i;
 	int		j;
-	char	*line;
+	char	*temp;
 
 	i = 0;
-	while (buffer[i] && buffer[i] != '\n')
-		i++;
-	if (buffer[i] == NULL)
-	{
-		free(buffer);
-		return (NULL);
-	}
-	line = malloc((sizeof(char)) * (ft_strlen(buffer) - i + 1));
-	i++;
-	j = 0;
-	while (buffer[i])
-		line[j++] = buffer[i++];
-	free(buffer);
-	return(line);
-}
-
-static char	*new_line(char *bassin_buffer)
-{
-	char	*line;
-	char	*str;
-	int		len;
-
-	str = ft_strchr(bassin_buffer, '\n');
-	len = (bassin_buffer - str) + 1;
-	line = ft_substr(bassin_buffer, 0, len);
-	if (line == NULL)
-		return (NULL);
-	return (line);
-}
-
-static char	*read_from_file(char *basin_buffer, int fd)
-{
-	int			bytes_read;
-	char		*cup_buffer;
-
-	bytes_read = 1;
-	cup_buffer = malloc((BUFFER_SIZE + 1) * (sizeof(char)));
-	if (cup_buffer == NULL)
-		return (ft_free());
-	bytes_read = read(fd, cup_buffer, BUFFER_SIZE);
-	if (bytes_read <= 0)
-	{
-		free (cup_buffer);
-		return (NULL);
-	}
-	return (cup_buffer);
+	j = ft_strlen(full_line);
+	while(!ft_strchr(full_line, '\0'))
+		i ++;
+	line = ft_substr(full_line, 0, i);
+	temp = full_line;
+	free(full_line);
+	full_line = ft_substr(temp, i, (j-i));
 }
 
 char	*get_next_line(int fd)
 {
-	static char	*basin_buffer;
+	static char	*full_line;
 	char		*line;
+	int			readed;
 
-	if (fd < 0 || read(fd, NULL, 0) < 0 || BUFFER_SIZE <= 0)
+	if (fd < 0 || read(fd, &line, 0) < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	basin_buffer = read_file(basin_buffer, fd);
-	if (basin_buffer == NULL)
+	readed = 1;
+	line = NULL;
+	read_and_add(fd, full_line, readed);
+	if (full_line == NULL)
 		return (NULL);
-	line = new_line(basin_buffer);
-	basin_buffer = clear_buffer(basin_buffer);
+	extract_line(full_line, line);
 	return (line);
 }
