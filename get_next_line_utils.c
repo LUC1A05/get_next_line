@@ -6,7 +6,7 @@
 /*   By: ldel-rio <ldel-rio@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/15 13:43:14 by ldel-rio          #+#    #+#             */
-/*   Updated: 2024/01/24 17:11:34 by ldel-rio         ###   ########.fr       */
+/*   Updated: 2024/02/06 16:55:17 by ldel-rio         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int	ft_strlen(const char *s)
 	return (i);
 }
 
-char	*ft_strjoin(char const *s1, char const *s2)
+char	*ft_strjoin(char *s1, char *s2)
 {
 	char	*p;
 	int		j;
@@ -52,7 +52,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	return (p);
 }
 
-char	*ft_substr(char const *s, unsigned int start, int len)
+char	*ft_substr(char const *s, int start, int len)
 {
 	int		i;
 	int		j;
@@ -95,4 +95,27 @@ char	*ft_strchr(const char *s, int c)
 	if (s[i] == (unsigned char)c)
 		return ((char *)&s[i]);
 	return (0);
+}
+
+size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize)
+{
+	size_t	i;
+	size_t	counter;
+
+	counter = 0;
+	i = 0;
+	while (src[counter])
+	{
+		counter++;
+	}
+	if (dstsize != 0)
+	{
+		while (i < (dstsize - 1) && src[i])
+		{
+			dst[i] = src[i];
+			i++;
+		}
+		dst[i] = '\0';
+	}
+	return (counter);
 }

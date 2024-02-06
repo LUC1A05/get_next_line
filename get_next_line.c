@@ -6,76 +6,86 @@
 /*   By: ldel-rio <ldel-rio@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/15 13:43:17 by ldel-rio          #+#    #+#             */
-/*   Updated: 2024/01/24 17:12:51 by ldel-rio         ###   ########.fr       */
+/*   Updated: 2024/02/06 17:16:16 by ldel-rio         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-int main() {
-    // Example usage
-    int fd = open("example.txt", O_RDONLY);
-    char *line = get_next_line(fd);
-    
+int	main()
+{
+	int		fd;
+	char	*line;
+
+	fd = open("example.txt", O_RDONLY);
+	line = get_next_line(fd);
+	printf("%s\n", line);
 	while ((line = get_next_line(fd)) != NULL)
-	{
+/* 	{
 		printf("%s\n", line);
 		free(line);
-	}
+	} */
 	close(fd);
-    return (0);
+	return (0);
 }
 
-void	read_and_add(int fd, char *full_line, int readed)
+char	*read_and_add(int fd, char *full_line, int readed)
 {
 	char	*buff;
 
+	buff = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	while (!ft_strchr(buff, '\n') && readed != 0)
 	{
-		buff = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 		if (buff == NULL)
-			return;
+			return (NULL);
 		readed = read(fd, buff, BUFFER_SIZE);
 		if (full_line == NULL && readed == 0)
 		{
 			free(buff);
-			return;
+			return (NULL);
 		}
 		buff[readed] = '\0';
 		full_line = ft_strjoin(full_line, buff);
 		free(buff);
+		buff = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	}
+	free(buff);
+	return (full_line);
 }
 
-void extract_line(char *full_line, char *line)
+char	*extract_line(char **full_line)
 {
 	int		i;
 	int		j;
 	char	*temp;
+	char	*extracted;
 
 	i = 0;
-	j = ft_strlen(full_line);
-	while(!ft_strchr(full_line, '\0'))
+	j = ft_strlen(*full_line);
+	while (full_line[0][i] != '\n')
 		i ++;
-	line = ft_substr(full_line, 0, i);
-	temp = full_line;
-	free(full_line);
-	full_line = ft_substr(temp, i, (j-i));
+	extracted = ft_substr(full_line[0], 0, i);
+	temp = malloc(sizeof(char) * ft_strlen(full_line[0]));
+	ft_strlcpy(full_line[0], temp, ft_strlen(full_line[0]));
+	free(full_line[0]);
+	*full_line = temp;
+	return (extracted);
 }
 
 char	*get_next_line(int fd)
 {
-	static char	*full_line;
+	static char	*full_line = NULL;
 	char		*line;
 	int			readed;
 
-	if (fd < 0 || read(fd, &line, 0) < 0 || BUFFER_SIZE <= 0)
+	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
 	readed = 1;
-	line = NULL;
-	read_and_add(fd, full_line, readed);
+	if (!full_line)
+		full_line = malloc(sizeof(char) * (BUFFER_SIZE + 1));
+	full_line = read_and_add(fd, full_line, readed);
 	if (full_line == NULL)
 		return (NULL);
-	extract_line(full_line, line);
+	line = extract_line(&full_line);
 	return (line);
 }
