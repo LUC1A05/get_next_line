@@ -6,7 +6,7 @@
 /*   By: ldel-rio <ldel-rio@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/15 13:43:14 by ldel-rio          #+#    #+#             */
-/*   Updated: 2024/02/06 16:55:17 by ldel-rio         ###   ########.fr       */
+/*   Updated: 2024/02/08 18:42:37 by ldel-rio         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ char	*ft_strjoin(char *s1, char *s2)
 	j = 0;
 	if (!s1 || !s2)
 		return (NULL);
-	p = (char *) malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2)+ 1));
+	p = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2)+ 1));
 	if (p == NULL)
 		return (NULL);
 	while (s1[i] != '\0')
