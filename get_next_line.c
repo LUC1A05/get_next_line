@@ -6,7 +6,7 @@
 /*   By: ldel-rio <ldel-rio@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/15 13:43:17 by ldel-rio          #+#    #+#             */
-/*   Updated: 2024/02/08 19:37:45 by ldel-rio         ###   ########.fr       */
+/*   Updated: 2024/02/08 20:46:55 by ldel-rio         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,10 @@ char	*extract_line(char *full_line)
 	while (full_line[i] != '\0' && full_line[i] != '\n')
 		i ++;
 	extracted = ft_substr(full_line, 0, i);
-	extracted[i] = '\0';
+	if (full_line[i] == '\n')
+		extracted[i] = '\n';
+	else
+		extracted[i] = '\0';
 	return (extracted);
 }
 
@@ -89,20 +92,23 @@ char	*get_next_line(int fd)
 	return (line);
 }
 
-/*int	main(void)
+/* int	main(void)
 {
 	char	*line;
 	int		i;
 	int		fd1;
+
 	fd1 = open("example.txt", O_RDONLY);
 	i = 1;
-	while (i < 7)
+	while (i < 4)
 	{
 		line = get_next_line(fd1);
-		printf("\nline [%02d]: %s", i, line);
-		free(line);
+		if (line == NULL)
+			break ;
+		printf("[%d]: %s", i, line);
+		//free(line);
 		i++;
 	}
 	close(fd1);
 	return (0);
-}*/
+} */
