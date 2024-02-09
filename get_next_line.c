@@ -18,7 +18,7 @@ char	*read_and_add(int fd, char *full_line)
 	int		readed;
 
 	buff = malloc(sizeof(char) * (BUFFER_SIZE + 1));
-	if (buff == NULL)
+	if (!buff)
 		return (NULL);
 	while (!ft_strchr(buff, '\n') && readed != 0)
 	{
@@ -30,8 +30,6 @@ char	*read_and_add(int fd, char *full_line)
 			free(buff);
 			return (NULL);
 		}
-		if (!full_line)
-			full_line = ft_strdup("");
 		buff[readed] = '\0';
 		full_line = ft_strjoin(full_line, buff);
 		free(buff);
