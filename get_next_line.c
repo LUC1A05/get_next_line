@@ -12,9 +12,10 @@
 
 #include "get_next_line.h"
 
-char	*read_and_add(int fd, char *full_line, int readed)
+char	*read_and_add(int fd, char *full_line)
 {
 	char	*buff;
+	int		readed;
 
 	buff = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (buff == NULL)
@@ -23,17 +24,18 @@ char	*read_and_add(int fd, char *full_line, int readed)
 	{
 		readed = read(fd, buff, BUFFER_SIZE);
 		if (readed == -1)
-		{
-			free(buff);
 			return (NULL);
-		}
 		if (full_line == NULL && readed == 0)
 		{
 			free(buff);
 			return (NULL);
 		}
+		if (!full_line)
+			full_line = ft_strdup("");
 		buff[readed] = '\0';
 		full_line = ft_strjoin(full_line, buff);
+		free(buff);
+		buff = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	}
 	free(buff);
 	return (full_line);
@@ -49,9 +51,11 @@ char	*extract_line(char *full_line)
 		i ++;
 	extracted = ft_substr(full_line, 0, i);
 	if (full_line[i] == '\n')
+	{
 		extracted[i] = '\n';
-	else
-		extracted[i] = '\0';
+		i ++;
+	}
+	extracted[i] = '\0';
 	return (extracted);
 }
 
@@ -67,6 +71,7 @@ char	*next_line(char *full_line)
 		i ++;
 	new_full_line = ft_substr(full_line, i + 1, (j - i));
 	free(full_line);
+	full_line = NULL;
 	return (new_full_line);
 }
 
@@ -74,14 +79,12 @@ char	*get_next_line(int fd)
 {
 	static char	*full_line;
 	char		*line;
-	int			readed;
 
-	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0))
+	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	readed = 1;
 	if (!full_line)
 		full_line = malloc(sizeof(char) * (BUFFER_SIZE + 1));
-	full_line = read_and_add(fd, full_line, readed);
+	full_line = read_and_add(fd, full_line);
 	if (full_line == NULL)
 	{
 		free(full_line);
@@ -92,7 +95,7 @@ char	*get_next_line(int fd)
 	return (line);
 }
 
-/* int	main(void)
+int	main()
 {
 	char	*line;
 	int		i;
@@ -100,7 +103,7 @@ char	*get_next_line(int fd)
 
 	fd1 = open("example.txt", O_RDONLY);
 	i = 1;
-	while (i < 4)
+	while (i < 10)
 	{
 		line = get_next_line(fd1);
 		if (line == NULL)
@@ -111,4 +114,4 @@ char	*get_next_line(int fd)
 	}
 	close(fd1);
 	return (0);
-} */
+}
