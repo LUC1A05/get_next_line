@@ -17,10 +17,11 @@ char	*read_and_add(int fd, char *full_line)
 	char	*buff;
 	int		readed;
 
+	readed = 1;
 	buff = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (!buff)
 		return (NULL);
-	while (!ft_strchr(buff, '\n') && readed != 0)
+	while (!ft_strchr(full_line, '\n') && readed != 0)
 	{
 		readed = read(fd, buff, BUFFER_SIZE);
 		if (readed == -1)
@@ -30,6 +31,8 @@ char	*read_and_add(int fd, char *full_line)
 			free(buff);
 			return (NULL);
 		}
+		if (!full_line)
+			full_line = malloc(1);
 		buff[readed] = '\0';
 		full_line = ft_strjoin(full_line, buff);
 		free(buff);
@@ -107,7 +110,7 @@ int	main()
 		if (line == NULL)
 			break ;
 		printf("[%d]: %s", i, line);
-		//free(line);
+		free(line);
 		i++;
 	}
 	close(fd1);
