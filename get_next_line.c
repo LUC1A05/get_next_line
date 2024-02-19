@@ -17,20 +17,16 @@ char	*read_and_add(int fd, char *full_line)
 	char	*buff;
 	int		readed;
 
-	readed = 1;
+	buff = NULL;
 	buff = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (!buff)
 		return (NULL);
+	readed = 1;
 	while (!ft_strchr(full_line, '\n') && readed != 0)
 	{
 		readed = read(fd, buff, BUFFER_SIZE);
-		if (readed == -1)
-			return (NULL);
-		if (full_line == NULL && readed == 0)
-		{
-			free(buff);
-			return (NULL);
-		}
+		if ((full_line == NULL && readed == 0) || readed == -1)
+			return (free(buff), free(full_line), NULL);
 		if (!full_line)
 			full_line = malloc(1);
 		buff[readed] = '\0';
@@ -48,8 +44,11 @@ char	*extract_line(char *full_line)
 	char	*extracted;
 
 	i = 0;
+	if (!full_line[i])
+		return(NULL);
 	while (full_line[i] != '\0' && full_line[i] != '\n')
 		i ++;
+	extracted = NULL;
 	extracted = ft_substr(full_line, 0, i);
 	if (full_line[i] == '\n')
 	{
