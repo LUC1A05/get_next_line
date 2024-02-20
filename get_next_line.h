@@ -6,7 +6,7 @@
 /*   By: ldel-rio <ldel-rio@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/15 13:43:11 by ldel-rio          #+#    #+#             */
-/*   Updated: 2024/02/08 17:03:25 by ldel-rio         ###   ########.fr       */
+/*   Updated: 2024/02/20 16:35:45 by ldel-rio         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ char		*extract_line(char *full_line);
 char		*next_line(char *full_line);
 char		*ft_substr(char const *s, int start, int len);
 char		*read_and_add(int fd, char *full_line);
-char		*ft_strchr(const char *s, int c);
+int			ft_strchr(char *s, int c);
 char		*ft_strjoin(char *s1, char *s2);
 int			ft_strlen(const char *s);
 
